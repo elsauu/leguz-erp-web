@@ -134,3 +134,4 @@ C:\LEGUZ\LEGUZ\obj\Debug\net8.0\refint\LEGUZ.dll
 C:\LEGUZ\LEGUZ\obj\Debug\net8.0\LEGUZ.pdb
 C:\LEGUZ\LEGUZ\obj\Debug\net8.0\LEGUZ.genruntimeconfig.cache
 C:\LEGUZ\LEGUZ\obj\Debug\net8.0\ref\LEGUZ.dll
+C:\LEGUZ\LEGUZ\bin\Debug\net8.0\BCrypt.Net-Next.dll
