@@ -1,0 +1,9 @@
+C:\LEGUZ\LEGUZ\obj\Debug\net8.0\LEGUZ.csproj.AssemblyReference.cache
+C:\LEGUZ\LEGUZ\obj\Debug\net8.0\LEGUZ.GeneratedMSBuildEditorConfig.editorconfig
+C:\LEGUZ\LEGUZ\obj\Debug\net8.0\LEGUZ.AssemblyInfoInputs.cache
+C:\LEGUZ\LEGUZ\obj\Debug\net8.0\LEGUZ.AssemblyInfo.cs
+C:\LEGUZ\LEGUZ\obj\Debug\net8.0\LEGUZ.csproj.CoreCompileInputs.cache
+C:\LEGUZ\LEGUZ\obj\Debug\net8.0\LEGUZ.MvcApplicationPartsAssemblyInfo.cache
+C:\LEGUZ\LEGUZ\obj\Debug\net8.0\LEGUZ.RazorAssemblyInfo.cache
+C:\LEGUZ\LEGUZ\obj\Debug\net8.0\LEGUZ.RazorAssemblyInfo.cs
+C:\LEGUZ\LEGUZ\obj\Debug\net8.0\LEGUZ.sourcelink.json
