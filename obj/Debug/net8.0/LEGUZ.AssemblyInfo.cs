@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LEGUZ")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19fd9c6e97dc063b0cf2f558e95e826b852b5395")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2b033005b87cd6b2fdd848cb62037af1e1da7fc8")]
 [assembly: System.Reflection.AssemblyProductAttribute("LEGUZ")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LEGUZ")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -16,7 +16,7 @@ namespace LEGUZ.Models.Entities
 
         [Required]
         [MaxLength(20)]
-        public string Type { get; set; } = "ROUTE"; // ROUTE, MOTORCYCLE, STORE, SUPERMARKET
+        public string Type { get; set; } = "ROUTE";
 
         public bool IsActive { get; set; } = true;
 
@@ -24,9 +24,9 @@ namespace LEGUZ.Models.Entities
         public string? Phone { get; set; }
 
         // Foreign key
-        public int? RouteId { get; set; }
+        public int? DeliveryRouteId { get; set; }
 
-        [ForeignKey("RouteId")]
-        public Route? Route { get; set; }
+        [ForeignKey("DeliveryRouteId")]
+        public DeliveryRoute? DeliveryRoute { get; set; }
     }
 }
