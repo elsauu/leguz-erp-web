@@ -36,3 +36,4 @@ Web system for managing the daily distribution and sales operations of a tortill
 - Added `/Vendedores` module: list, create, edit, and toggle active status
 - Salesperson types supported: Route, Motorcycle, Store
 - Route assignment dropdown auto-hides for non-route salesperson types
+-
