@@ -273,6 +273,10 @@
            href="/Clientes">
             <i class="bi bi-person-rolodex"></i> Clientes
         </a>
+        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Productos" ? "active" : "")"
+           href="/Productos">
+            <i class="bi bi-box-seam"></i> Productos
+        </a>
 
         <div class="nav-section">Reportes</div>
         <a class="nav-link" href="/Report">
