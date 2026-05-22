@@ -1,0 +1,17 @@
+## .NET
+bin/
+obj/
+*.user
+
+## Visual Studio
+.vs/
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Temp / local
+FORMATOS_TEMP/
+CONTEXTO.md
+
+## Secrets
+appsettings.Development.json

@@ -13,6 +13,8 @@ namespace LEGUZ.Controllers
             _context = context;
         }
 
+        public IActionResult Index() => RedirectToAction("Login");
+
         [HttpGet]
         public IActionResult Login()
         {

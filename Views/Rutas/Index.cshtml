@@ -1,0 +1,80 @@
+﻿@model IEnumerable<LEGUZ.Models.Entities.DeliveryRoute>
+@{
+    ViewData["Title"] = "Rutas";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-3 mb-3" role="alert">
+        <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-map me-2 text-primary"></i>Rutas de distribución</span>
+        <a href="/Rutas/Create" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i>Nueva ruta
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Vendedores asignados</th>
+                    <th>Estatus</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var route in Model)
+                {
+                    <tr>
+                        <td><span class="fw-bold text-primary">@route.Number.ToString("D2")</span></td>
+                        <td>@route.Name</td>
+                        <td>
+                            @if (route.Salespersons.Any())
+                            {
+                                @foreach (var s in route.Salespersons)
+                                {
+                                    <span class="badge bg-light text-dark border me-1">@s.FirstName @s.LastName</span>
+                                }
+                            }
+                            else
+                            {
+                                <span style="color:#9ca3af;font-size:.8rem;">Sin asignar</span>
+                            }
+                        </td>
+                        <td>
+                            @if (route.IsActive)
+                            {
+                                <span class="badge badge-settled rounded-pill">Activa</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-cancelled rounded-pill">Inactiva</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a href="/Rutas/Edit/@route.DeliveryRouteId"
+                               class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form method="post" action="/Rutas/Toggle/@route.DeliveryRouteId"
+                                  class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm @(route.IsActive ? "btn-outline-danger" : "btn-outline-success")"
+                                        title="@(route.IsActive ? "Desactivar" : "Activar")">
+                                    <i class="bi @(route.IsActive ? "bi-toggle-on" : "bi-toggle-off")"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
