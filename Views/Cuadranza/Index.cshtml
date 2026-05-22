@@ -1,0 +1,170 @@
+@{
+    var fecha = (DateOnly)ViewBag.Fecha;
+    var rutas = (List<DeliveryRoute>)ViewBag.Rutas;
+    var registros = (List<DailyRouteRecord>)ViewBag.Registros;
+    var vpRuta = (Dictionary<int, Salesperson>)ViewBag.VendedoresPorRuta;
+
+    int capturadas = registros.Count;
+    int pendientes = rutas.Count - capturadas;
+    decimal totalFaltKilos = registros.Sum(r => r.ShortageKilos);
+    decimal totalFaltPqts = registros.Sum(r => r.ShortagePackages);
+
+    string CulturaEs = "es-MX";
+    var cultura = new System.Globalization.CultureInfo(CulturaEs);
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-3 mb-3" role="alert">
+        <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Selector de fecha -->
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+        <span style="font-size:.8rem;color:#6b7280;">Cuadranza del día:</span>
+        <span class="ms-2 fw-semibold" style="color:#111827;">
+            @fecha.ToString("dddd dd 'de' MMMM yyyy", cultura)
+        </span>
+    </div>
+    <form method="get" action="/Cuadranza" class="d-flex gap-2 align-items-center">
+        <input type="date" name="fecha" value="@fecha.ToString("yyyy-MM-dd")"
+               class="form-control form-control-sm" style="width:170px;" />
+        <button type="submit" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-search me-1"></i>Buscar
+        </button>
+    </form>
+</div>
+
+<!-- KPIs -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="kpi-card" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
+            <i class="bi bi-clipboard-check kpi-icon"></i>
+            <div class="kpi-value">@capturadas/10</div>
+            <div class="kpi-label">Rutas capturadas</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="kpi-card" style="background:linear-gradient(135deg,#f59e0b,#d97706);">
+            <i class="bi bi-hourglass-split kpi-icon"></i>
+            <div class="kpi-value">@pendientes</div>
+            <div class="kpi-label">Pendientes</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="kpi-card" style="background:linear-gradient(135deg,@(totalFaltKilos > 0 ? "#dc2626,#b91c1c" : "#10b981,#059669"));">
+            <i class="bi bi-exclamation-triangle kpi-icon"></i>
+            <div class="kpi-value">@totalFaltKilos.ToString("N2")</div>
+            <div class="kpi-label">Faltante Kilos</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="kpi-card" style="background:linear-gradient(135deg,@(totalFaltPqts > 0 ? "#dc2626,#b91c1c" : "#10b981,#059669"));">
+            <i class="bi bi-box-seam kpi-icon"></i>
+            <div class="kpi-value">@totalFaltPqts.ToString("N2")</div>
+            <div class="kpi-label">Faltante Paquetes</div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de rutas -->
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-clipboard-data me-2 text-primary"></i>Estado de rutas del día
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Ruta</th>
+                    <th>Vendedor</th>
+                    <th>Estado</th>
+                    <th class="text-end">Falt. Kilos</th>
+                    <th class="text-end">Falt. Paquetes</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ruta in rutas)
+                {
+                    var registro = registros.FirstOrDefault(r => r.DeliveryRouteId == ruta.DeliveryRouteId);
+                    vpRuta.TryGetValue(ruta.DeliveryRouteId, out var vendedor);
+                    bool capturada = registro != null;
+
+                    <tr>
+                        <td class="fw-semibold" style="color:#9ca3af;">@ruta.Number.ToString("D2")</td>
+                        <td class="fw-semibold">@ruta.Name</td>
+                        <td>
+                            @if (registro?.Salesperson != null)
+                            {
+                                <span>@registro.Salesperson.FirstName @registro.Salesperson.LastName</span>
+                            }
+                            else if (vendedor != null)
+                            {
+                                <span style="color:#9ca3af;font-size:.83rem;">@vendedor.FirstName @vendedor.LastName</span>
+                            }
+                            else
+                            {
+                                <span style="color:#d1d5db;font-size:.8rem;">—</span>
+                            }
+                        </td>
+                        <td>
+                            @if (capturada)
+                            {
+                                <span class="badge badge-settled rounded-pill">Capturada</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-pending rounded-pill">Pendiente</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            @if (registro != null)
+                            {
+                                <span class="@(registro.ShortageKilos > 0 ? "text-danger fw-semibold" : "text-success")">
+                                    @registro.ShortageKilos.ToString("N2")
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="color:#d1d5db;">—</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            @if (registro != null)
+                            {
+                                <span class="@(registro.ShortagePackages > 0 ? "text-danger fw-semibold" : "text-success")">
+                                    @registro.ShortagePackages.ToString("N2")
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="color:#d1d5db;">—</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            @if (capturada)
+                            {
+                                <a href="/Cuadranza/Editar/@registro!.DailyRouteRecordId"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil me-1"></i>Editar
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="/Cuadranza/Capturar?rutaId=@ruta.DeliveryRouteId&fecha=@fecha.ToString("yyyy-MM-dd")"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-plus-lg me-1"></i>Capturar
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
