@@ -1,0 +1,127 @@
+@model IEnumerable<LEGUZ.Models.Entities.Customer>
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-3 mb-3" role="alert">
+        <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-person-rolodex me-2 text-primary"></i>Clientes registrados</span>
+        <a href="/Clientes/Create" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i>Nuevo cliente
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Canal</th>
+                    <th>Ruta asignada</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Estatus</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@c.Name</td>
+                        <td>
+                            @if (c.CustomerType == "ROUTE")
+                            {
+                                <span class="badge" style="background:#dbeafe;color:#1e40af;">Ruta</span>
+                            }
+                            else if (c.CustomerType == "SUPERMARKET")
+                            {
+                                <span class="badge" style="background:#dcfce7;color:#166534;">Autoservicio</span>
+                            }
+                            else if (c.CustomerType == "MOTORCYCLE")
+                            {
+                                <span class="badge" style="background:#fef9c3;color:#854d0e;">Moto</span>
+                            }
+                            else
+                            {
+                                <span class="badge" style="background:#f3e8ff;color:#6b21a8;">Mostrador</span>
+                            }
+                        </td>
+                        <td>
+                            @if (c.DeliveryRoute != null)
+                            {
+                                <span class="badge bg-light text-dark border">
+                                    @c.DeliveryRoute.Number.ToString("D2") — @c.DeliveryRoute.Name
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="color:#9ca3af;font-size:.8rem;">—</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(c.Phone))
+                            {
+                                <span>@c.Phone</span>
+                            }
+                            else
+                            {
+                                <span style="color:#9ca3af;font-size:.8rem;">—</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(c.Address))
+                            {
+                                <span style="font-size:.83rem;">@c.Address</span>
+                            }
+                            else
+                            {
+                                <span style="color:#9ca3af;font-size:.8rem;">—</span>
+                            }
+                        </td>
+                        <td>
+                            @if (c.IsActive)
+                            {
+                                <span class="badge badge-settled rounded-pill">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-cancelled rounded-pill">Inactivo</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a href="/Clientes/Edit/@c.CustomerId"
+                               class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form method="post" action="/Clientes/Toggle/@c.CustomerId"
+                                  class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit"
+                                        class="btn btn-sm @(c.IsActive ? "btn-outline-danger" : "btn-outline-success")"
+                                        title="@(c.IsActive ? "Desactivar" : "Activar")">
+                                    <i class="bi @(c.IsActive ? "bi-toggle-on" : "bi-toggle-off")"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-4" style="color:#9ca3af;">
+                            No hay clientes registrados aún.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
