@@ -15,3 +15,6 @@ CONTEXTO.md
 
 ## Secrets
 appsettings.Development.json
+
+*.rar
+.claude/
