@@ -11,12 +11,12 @@ namespace LEGUZ.Models.Entities
 
         // Store sales
         public decimal CumbresSales { get; set; } = 0;
-        public decimal BallconesSales { get; set; } = 0;
+        public decimal BalconesSales { get; set; } = 0;
         public decimal PaseoSales { get; set; } = 0;
 
         // Invoices
         public decimal CumbresInvoices { get; set; } = 0;
-        public decimal BallconesInvoices { get; set; } = 0;
+        public decimal BalconesInvoices { get; set; } = 0;
         public decimal PaseoInvoices { get; set; } = 0;
         public decimal CustomerInvoices { get; set; } = 0;
         public decimal CardPayments { get; set; } = 0;
