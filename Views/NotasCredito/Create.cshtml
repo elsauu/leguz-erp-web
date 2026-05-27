@@ -1,0 +1,117 @@
+@model LEGUZ.Models.Entities.CreditNote
+@{
+    ViewData["Title"] = "Nueva Nota de Crédito";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-receipt me-2 text-primary"></i>Nueva nota de crédito
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Folio <span class="text-danger">*</span></label>
+                            <input asp-for="FolioNumber" class="form-control" placeholder="Ej. NC-00123" maxlength="20" />
+                            <span asp-validation-for="FolioNumber" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Fecha <span class="text-danger">*</span></label>
+                            <input asp-for="Date" class="form-control" type="date" />
+                            <span asp-validation-for="Date" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Estatus</label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="PENDING">Pendiente</option>
+                                <option value="SETTLED">Liquidada</option>
+                                <option value="CANCELLED">Cancelada</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Tienda / Autoservicio</label>
+                            <input asp-for="StoreName" class="form-control" placeholder="Ej. Smart Cumbres" maxlength="80" />
+                            <span asp-validation-for="StoreName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Cliente</label>
+                            <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.Customers">
+                                <option value="">— Sin cliente asignado —</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Ruta</label>
+                            <select asp-for="DeliveryRouteId" class="form-select" asp-items="ViewBag.DeliveryRoutes">
+                                <option value="">— Sin ruta —</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Vendedor</label>
+                            <select asp-for="SalespersonId" class="form-select" asp-items="ViewBag.Salespersons">
+                                <option value="">— Sin vendedor —</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <h6 class="fw-semibold mb-3 text-secondary">Detalle del producto</h6>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Paquetes</label>
+                            <input asp-for="Packages" class="form-control" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Kilos</label>
+                            <input asp-for="Kilos" class="form-control" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Kilo Taco</label>
+                            <input asp-for="Taco" class="form-control" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Masa</label>
+                            <input asp-for="Dough" class="form-control" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Chicharrón</label>
+                            <input asp-for="Crackling" class="form-control" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Totopos</label>
+                            <input asp-for="Chips" class="form-control" type="number" min="0" step="0.01" />
+                        </div>
+                    </div>
+
+                    <div class="form-check mt-3">
+                        <input asp-for="IsBarbacoa" class="form-check-input" type="checkbox" />
+                        <label class="form-check-label">Es nota de barbacoa</label>
+                    </div>
+
+                    <div class="mt-3">
+                        <label class="form-label fw-semibold">Notas</label>
+                        <textarea asp-for="Notes" class="form-control" rows="2" maxlength="500"
+                                  placeholder="Observaciones, motivo, etc."></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg me-1"></i>Guardar
+                        </button>
+                        <a href="/NotasCredito" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
