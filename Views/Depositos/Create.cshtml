@@ -1,0 +1,134 @@
+@model LEGUZ.Models.Entities.DailyDeposit
+@{
+    ViewData["Title"] = "Nuevo Depósito";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-bank me-2 text-primary"></i>Nuevo depósito diario
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3 mb-2">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Fecha <span class="text-danger">*</span></label>
+                            <input asp-for="Date" class="form-control" type="date" />
+                            <span asp-validation-for="Date" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <h6 class="fw-semibold mb-3 text-secondary">Ventas por tienda</h6>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Cumbres ($)</label>
+                            <input asp-for="CumbresSales" class="form-control dep-input" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Balcones ($)</label>
+                            <input asp-for="BalconesSales" class="form-control dep-input" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Paseo ($)</label>
+                            <input asp-for="PaseoSales" class="form-control dep-input" type="number" min="0" step="0.01" />
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <h6 class="fw-semibold mb-3 text-secondary">Facturas y pagos no en efectivo</h6>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Facturas Cumbres ($)</label>
+                            <input asp-for="CumbresInvoices" class="form-control dep-input" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Facturas Balcones ($)</label>
+                            <input asp-for="BalconesInvoices" class="form-control dep-input" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Facturas Paseo ($)</label>
+                            <input asp-for="PaseoInvoices" class="form-control dep-input" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Facturas a clientes ($)</label>
+                            <input asp-for="CustomerInvoices" class="form-control dep-input" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Pagos con tarjeta ($)</label>
+                            <input asp-for="CardPayments" class="form-control dep-input" type="number" min="0" step="0.01" />
+                        </div>
+                    </div>
+
+                    <!-- Cálculo en vivo -->
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-4">
+                            <div class="p-3" style="background:#f9fafb;border-radius:8px;">
+                                <div style="font-size:.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">Total ventas tiendas</div>
+                                <div class="fw-bold" style="font-size:1.3rem;color:#111827;">
+                                    $<span id="totalVentas">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3" style="background:#f9fafb;border-radius:8px;">
+                                <div style="font-size:.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">No efectivo</div>
+                                <div class="fw-bold" style="font-size:1.3rem;color:#6b7280;">
+                                    $<span id="totalNoEfectivo">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3" style="background:#f0fdf4;border-radius:8px;">
+                                <div style="font-size:.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">A depositar (efectivo)</div>
+                                <div class="fw-bold text-success" style="font-size:1.3rem;">
+                                    $<span id="totalDepositar">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label class="form-label fw-semibold">Notas</label>
+                        <textarea asp-for="Notes" class="form-control" rows="2" maxlength="500"
+                                  placeholder="Observaciones, número de comprobante, etc."></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg me-1"></i>Guardar depósito
+                        </button>
+                        <a href="/Depositos" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function recalcular() {
+            const get = id => parseFloat(document.getElementById(id)?.value || 0) || 0;
+            const ventas = get('@Html.IdFor(m => m.CumbresSales)')
+                         + get('@Html.IdFor(m => m.BalconesSales)')
+                         + get('@Html.IdFor(m => m.PaseoSales)');
+            const noEfectivo = get('@Html.IdFor(m => m.CumbresInvoices)')
+                             + get('@Html.IdFor(m => m.BalconesInvoices)')
+                             + get('@Html.IdFor(m => m.PaseoInvoices)')
+                             + get('@Html.IdFor(m => m.CustomerInvoices)')
+                             + get('@Html.IdFor(m => m.CardPayments)');
+            document.getElementById('totalVentas').textContent = ventas.toFixed(2);
+            document.getElementById('totalNoEfectivo').textContent = noEfectivo.toFixed(2);
+            document.getElementById('totalDepositar').textContent = (ventas - noEfectivo).toFixed(2);
+        }
+        document.querySelectorAll('.dep-input').forEach(el => el.addEventListener('input', recalcular));
+        recalcular();
+    </script>
+}

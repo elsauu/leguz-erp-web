@@ -1,0 +1,116 @@
+@model IEnumerable<LEGUZ.Models.Entities.DailyDeposit>
+@{
+    ViewData["Title"] = "Depósitos";
+    var cultura = new System.Globalization.CultureInfo("es-MX");
+
+    var hoy = DateOnly.FromDateTime(DateTime.Today);
+    var inicioMes = new DateOnly(hoy.Year, hoy.Month, 1);
+    var delMes = Model.Where(d => d.Date >= inicioMes && d.Date <= hoy).ToList();
+    decimal totalVentasMes = delMes.Sum(d => d.TotalToDeposit);
+    decimal totalDiferenciaMes = delMes.Sum(d => d.Difference);
+    int diasRegistradosMes = delMes.Count;
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-3 mb-3" role="alert">
+        <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- KPIs del mes -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="kpi-card" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
+            <i class="bi bi-calendar3 kpi-icon"></i>
+            <div class="kpi-value">@diasRegistradosMes</div>
+            <div class="kpi-label">Días con depósito este mes</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="kpi-card" style="background:linear-gradient(135deg,#10b981,#059669);">
+            <i class="bi bi-cash-stack kpi-icon"></i>
+            <div class="kpi-value">$@totalVentasMes.ToString("N0")</div>
+            <div class="kpi-label">Ventas tiendas (mes)</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="kpi-card" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">
+            <i class="bi bi-bank kpi-icon"></i>
+            <div class="kpi-value">$@totalDiferenciaMes.ToString("N0")</div>
+            <div class="kpi-label">A depositar (mes)</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="kpi-card" style="background:linear-gradient(135deg,#f59e0b,#d97706);">
+            <i class="bi bi-clock-history kpi-icon"></i>
+            <div class="kpi-value">@Model.Count()</div>
+            <div class="kpi-label">Registros totales</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-bank me-2 text-primary"></i>Depósitos diarios</span>
+        <a href="/Depositos/Create" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i>Nuevo depósito
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th class="text-end">Cumbres</th>
+                        <th class="text-end">Balcones</th>
+                        <th class="text-end">Paseo</th>
+                        <th class="text-end">Total ventas</th>
+                        <th class="text-end">Facturas + Tarjeta</th>
+                        <th class="text-end">A depositar</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in Model)
+                    {
+                        decimal noEfectivo = d.CumbresInvoices + d.BalconesInvoices + d.PaseoInvoices
+                            + d.CustomerInvoices + d.CardPayments;
+                        <tr>
+                            <td class="fw-semibold">
+                                @d.Date.ToString("dd 'de' MMM yyyy", cultura)
+                                <div style="font-size:.7rem;color:#9ca3af;">
+                                    @d.Date.ToString("dddd", cultura)
+                                </div>
+                            </td>
+                            <td class="text-end">$@d.CumbresSales.ToString("N2")</td>
+                            <td class="text-end">$@d.BalconesSales.ToString("N2")</td>
+                            <td class="text-end">$@d.PaseoSales.ToString("N2")</td>
+                            <td class="text-end fw-semibold">$@d.TotalToDeposit.ToString("N2")</td>
+                            <td class="text-end" style="color:#6b7280;">$@noEfectivo.ToString("N2")</td>
+                            <td class="text-end">
+                                <span class="fw-bold text-success">$@d.Difference.ToString("N2")</span>
+                            </td>
+                            <td class="text-end">
+                                <a href="/Depositos/Edit/@d.DailyDepositId"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-4" style="color:#9ca3af;">
+                                No hay depósitos registrados aún.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
